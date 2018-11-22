@@ -1,7 +1,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-// LdV5W3LQKbaEqKze
+const mongoose = require("mongoose");
+
+const Post = require('./models/post');
+
 const app = express();
+
+mongoose.connect("mongodb+srv://vooit:sEcZONRNuZJk4g9D@heavenbase-bu5f3.mongodb.net/test?&w=1", { useNewUrlParser: true });
+
+// mongoose.connect('mongodb://${user}:${pass}@${uri}/${db}?authMechanism=SCRAM-SHA-1')
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,8 +27,13 @@ app.use((req, res, next) => {
   next();
 });
 
+
 app.post("/api/posts", (req, res, next) => {
-  const post = req.body;
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
+  post.save()
   console.log(post);
   res.status(201).json({
     message: 'Post added successfully'
