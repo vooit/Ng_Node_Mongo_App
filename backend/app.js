@@ -30,11 +30,15 @@ app.post("/api/posts", (req, res, next) => {
     title: req.body.title,
     content: req.body.content
   });
-  post.save();
-  console.log(post);
-  res.status(201).json({
-    message: 'Post added successfully'
-  });
+  post.save().then(resp => {
+    console.log(resp)
+    console.log(post);
+    res.status(201).json({
+      message: 'Post added successfully',
+      postId: resp._id
+    })
+});
+
 });
 
 app.get("/api/posts", (req, res, next) => {

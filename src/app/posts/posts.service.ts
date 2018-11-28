@@ -1,8 +1,8 @@
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {map} from "rxjs/internal/operators";
-import {Post} from "./post.model";
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Subject} from 'rxjs';
+import {map} from 'rxjs/internal/operators';
+import {Post} from './post.model';
 
 
 @Injectable({providedIn: "root"})
@@ -38,13 +38,7 @@ export class PostsService {
   getPostUpdateListener() {
     return this.postsUpdated.asObservable();
   }
-  //
-  // deletePost(postId: string) {
-  //   return this.http.delete(this.url + "/" + postId)
-  //     .subscribe(() => {
-  //     console.log('Deleted!')
-  //   });
-  // }
+
   deletePost(postId: string) {
     this.http.delete('http://localhost:3000/api/posts/' + postId)
       .subscribe(() => {
@@ -55,13 +49,15 @@ export class PostsService {
   }
 
 
-
   addPost(title: string, content: string) {
     const post: Post = {id: null, title: title, content: content};
     this.http
-      .post<{ message: string }>(this.url, post)
+      .post<{ message: string, postId: string }>(this.url, post)
       .subscribe(responseData => {
-        console.log(responseData.message);
+        console.log("postId", responseData.postId);
+
+        const postId = responseData.postId;
+        post.id = postId;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
